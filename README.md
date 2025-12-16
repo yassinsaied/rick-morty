@@ -34,23 +34,29 @@ cd rick-morty-test
 
 2. Configurer les variables d'environnement
 
+Le fichier `.env` est déjà inclus dans le projet pour faciliter les tests. En production, créez votre propre fichier `.env.local`.
+
+3. Générer les clés JWT
+
 ```bash
-cp .env.example .env
+docker-compose exec php php bin/console lexik:jwt:generate-keypair
 ```
 
-3. Démarrer les conteneurs
+Cette commande génère les clés privée et publique dans le dossier `config/jwt/`.
+
+4. Démarrer les conteneurs
 
 ```bash
 docker-compose up -d
 ```
 
-4. Installer les dépendances
+5. Installer les dépendances
 
 ```bash
 docker-compose exec php composer install
 ```
 
-5. Créer la base de données
+6. Créer la base de données
 
 ```bash
 docker-compose exec php php bin/console doctrine:database:create
