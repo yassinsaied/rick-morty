@@ -8,15 +8,33 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Contrôleur pour la gestion des localisations de Rick and Morty
+ * 
+ * Expose les endpoints pour récupérer les localisations depuis l'API externe.
+ * Tous les endpoints nécessitent une authentification JWT valide.
+ */
 #[Route('/api/locations', name: 'api_locations_')]
 class LocationController
 {
+    /**
+     * @param RickMortyApiClient $apiClient Client pour interagir avec l'API Rick and Morty
+     */
     public function __construct(
         private readonly RickMortyApiClient $apiClient
     ) {}
 
     /**
-     * Get all locations with pagination and filters
+     * Liste toutes les localisations avec pagination et filtres optionnels
+     * 
+     * Paramètres de requête supportés:
+     * - page: numéro de la page (défaut: 1)
+     * - name: filtrer par nom de la localisation
+     * - type: filtrer par type de localisation
+     * - dimension: filtrer par dimension
+     * 
+     * @param Request $request Requête HTTP contenant les paramètres de pagination et filtres
+     * @return JsonResponse Liste des localisations avec informations de pagination
      */
     #[Route('', name: 'list', methods: ['GET'])]
     public function list(Request $request): JsonResponse
@@ -36,7 +54,11 @@ class LocationController
     }
 
     /**
-     * Get a single location by ID
+     * Récupère une localisation spécifique par son ID
+     * 
+     * @param int $id Identifiant unique de la localisation
+     * @return JsonResponse Données complètes de la localisation
+     * @throws ResourceNotFoundException Si la localisation n'existe pas
      */
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(int $id): JsonResponse
@@ -47,8 +69,13 @@ class LocationController
     }
 
     /**
-     * Get multiple locations by IDs
-     * Example: /api/locations/multiple?ids=1,2,3
+     * Récupère plusieurs localisations par leurs IDs en une seule requête
+     * 
+     * Exemple d'utilisation: GET /api/locations/multiple?ids=1,2,3
+     * 
+     * @param Request $request Requête HTTP contenant le paramètre 'ids' (séparés par des virgules)
+     * @return JsonResponse Tableau contenant les données de toutes les localisations demandées
+     * @throws ResourceNotFoundException Si le paramètre 'ids' est manquant ou vide
      */
     #[Route('/multiple', name: 'multiple', methods: ['GET'])]
     public function multiple(Request $request): JsonResponse

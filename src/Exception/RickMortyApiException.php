@@ -12,24 +12,4 @@ namespace App\Exception;
  * - Cela permet de faire : catch (RickMortyApiException $e)
  * - Plus facile à gérer que de vérifier des codes d'erreur
  */
-class RickMortyApiException extends \Exception
-{
-    // On pourrait ajouter des propriétés personnalisées si nécessaire :
-
-    // private ?int $apiStatusCode = null;
-
-    // public function __construct(
-    //     string $message,
-    //     int $code = 0,
-    //     ?\Throwable $previous = null,
-    //     ?int $apiStatusCode = null
-    // ) {
-    //     parent::__construct($message, $code, $previous);
-    //     $this->apiStatusCode = $apiStatusCode;
-    // }
-
-    // public function getApiStatusCode(): ?int
-    // {
-    //     return $this->apiStatusCode;
-    // }
-}
+class RickMortyApiException extends \Exception {}

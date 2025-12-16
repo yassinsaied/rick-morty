@@ -18,6 +18,5 @@ namespace App\Exception;
  * Avec cette classe, on peut faire :
  *   catch (ResourceNotFoundException $e) { ... }
  * 
- * C'est plus propre et plus sûr !
  */
 class ResourceNotFoundException extends \Exception {}

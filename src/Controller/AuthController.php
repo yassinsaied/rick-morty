@@ -10,9 +10,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/**
+ * Contrôleur pour l'authentification et l'inscription des utilisateurs
+ * 
+ * Gère l'enregistrement de nouveaux utilisateurs.
+ * L'endpoint de login est géré automatiquement par LexikJWTAuthenticationBundle.
+ */
 #[Route('/api/auth', name: 'api_auth_')]
 class AuthController
 {
+    /**
+     * @param EntityManagerInterface $entityManager Gestionnaire d'entités Doctrine
+     * @param UserPasswordHasherInterface $passwordHasher Service de hachage des mots de passe
+     * @param ValidatorInterface $validator Service de validation Symfony
+     */
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
@@ -20,7 +31,17 @@ class AuthController
     ) {}
 
     /**
-     * Register a new user
+     * Enregistre un nouvel utilisateur dans le système
+     * 
+     * Champs requis dans le corps de la requête JSON:
+     * - email: adresse email unique de l'utilisateur
+     * - password: mot de passe (sera hashé avant stockage)
+     * - firstName: prénom
+     * - lastName: nom de famille
+     * - roles (optionnel): tableau des rôles (défaut: ['ROLE_USER'])
+     * 
+     * @param Request $request Requête HTTP contenant les données d'inscription en JSON
+     * @return JsonResponse Confirmation d'inscription avec les données de l'utilisateur créé
      */
     #[Route('/register', name: 'register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
@@ -85,7 +106,17 @@ class AuthController
     }
 
     /**
-     * Login endpoint (JWT token is handled by lexik/jwt-authentication-bundle)
-     * POST /api/auth/login with {"username": "email", "password": "password"}
+     * Endpoint de connexion (géré automatiquement par LexikJWTAuthenticationBundle)
+     * 
+     * POST /api/auth/login avec le corps JSON:
+     * {
+     *   "username": "email@example.com",
+     *   "password": "votre_mot_de_passe"
+     * }
+     * 
+     * Retourne un token JWT en cas de succès:
+     * {
+     *   "token": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+     * }
      */
 }
