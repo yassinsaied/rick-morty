@@ -72,14 +72,14 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse src tests --level=5
+        run: vendor/bin/phpstan analyse src Tests --level=5
         continue-on-error: true
 
       - name: Run PHP Code Sniffer
-        run: vendor/bin/phpcs src tests --standard=PSR12
+        run: vendor/bin/phpcs src Tests --standard=PSR12
         continue-on-error: true
 
       - name: Run PHP Lint
         run: |
           find src -name '*.php' -exec php -l {} \;
-          find tests -name '*.php' -exec php -l {} \;
+          find Tests -name '*.php' -exec php -l {} \;
