@@ -1,0 +1,892 @@
+{
+  "info": {
+    "name": "Rick and Morty API - Complete Collection",
+    "description": "Collection complète pour l'API Rick and Morty avec authentification JWT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "1"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.environment.set(\"user_id\", pm.response.json().user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Créer un nouveau compte utilisateur"
+          },
+          "response": []
+        },
+        {
+          "name": "Login (User)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set(\"user_token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"rick@rickmorty.com\",\n  \"password\": \"rick123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Se connecter en tant qu'utilisateur normal (Rick)"
+          },
+          "response": []
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set(\"admin_token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin@rickmorty.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Se connecter en tant qu'administrateur"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.environment.set(\"user_token\", \"\");",
+                  "    pm.environment.set(\"admin_token\", \"\");",
+                  "    pm.environment.set(\"user_id\", \"\");",
+                  "    console.log(\"Tokens cleared from environment\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Se déconnecter (efface les tokens de l'environnement)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints d'authentification (publics)"
+    },
+    {
+      "name": "Users Management (Admin)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            },
+            "description": "Récupérer la liste de tous les utilisateurs (Admin uniquement)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "1"]
+            },
+            "description": "Récupérer un utilisateur spécifique par son ID (Admin uniquement)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Richard\",\n  \"lastName\": \"Sanchez\",\n  \"email\": \"rick.updated@rickmorty.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "2"]
+            },
+            "description": "Mettre à jour les informations d'un utilisateur (Admin uniquement)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/6",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "6"]
+            },
+            "description": "Supprimer un utilisateur (Admin uniquement)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestion des utilisateurs (Admin uniquement)",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{admin_token}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Characters",
+      "item": [
+        {
+          "name": "Get All Characters",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/characters",
+              "host": ["{{base_url}}"],
+              "path": ["api", "characters"]
+            },
+            "description": "Récupérer tous les personnages (page 1)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Characters - Page 2",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/characters?page=2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "characters"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Récupérer les personnages avec pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Characters - Filter by Name",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/characters?name=rick",
+              "host": ["{{base_url}}"],
+              "path": ["api", "characters"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "rick"
+                }
+              ]
+            },
+            "description": "Rechercher des personnages par nom"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Characters - Multiple Filters",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/characters?name=rick&status=alive&species=human",
+              "host": ["{{base_url}}"],
+              "path": ["api", "characters"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "rick"
+                },
+                {
+                  "key": "status",
+                  "value": "alive"
+                },
+                {
+                  "key": "species",
+                  "value": "human"
+                }
+              ]
+            },
+            "description": "Filtrer par nom, statut et espèce"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Character",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/characters/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "characters", "1"]
+            },
+            "description": "Récupérer Rick Sanchez (ID: 1)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Multiple Characters",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/characters/multiple?ids=1,2,3",
+              "host": ["{{base_url}}"],
+              "path": ["api", "characters", "multiple"],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "1,2,3"
+                }
+              ]
+            },
+            "description": "Récupérer plusieurs personnages par leurs IDs"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints pour les personnages Rick and Morty",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{user_token}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Get All Locations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations"]
+            },
+            "description": "Récupérer toutes les localisations"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Locations - Page 2",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations?page=2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Pagination des localisations"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Locations - Filter by Name",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations?name=earth",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "earth"
+                }
+              ]
+            },
+            "description": "Filtrer les localisations par nom"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Locations - Multiple Filters",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations?name=earth&type=planet",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "earth"
+                },
+                {
+                  "key": "type",
+                  "value": "planet"
+                }
+              ]
+            },
+            "description": "Filtrer par nom et type"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Location",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "1"]
+            },
+            "description": "Récupérer Earth (ID: 1)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Multiple Locations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/locations/multiple?ids=1,2,3",
+              "host": ["{{base_url}}"],
+              "path": ["api", "locations", "multiple"],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "1,2,3"
+                }
+              ]
+            },
+            "description": "Récupérer plusieurs localisations"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints pour les localisations Rick and Morty",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{user_token}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Episodes",
+      "item": [
+        {
+          "name": "Get All Episodes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/episodes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "episodes"]
+            },
+            "description": "Récupérer tous les épisodes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Episodes - Page 2",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/episodes?page=2",
+              "host": ["{{base_url}}"],
+              "path": ["api", "episodes"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Pagination des épisodes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Episodes - Filter by Name",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/episodes?name=pilot",
+              "host": ["{{base_url}}"],
+              "path": ["api", "episodes"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "pilot"
+                }
+              ]
+            },
+            "description": "Filtrer les épisodes par nom"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Episodes - Filter by Episode Code",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/episodes?episode=S01E01",
+              "host": ["{{base_url}}"],
+              "path": ["api", "episodes"],
+              "query": [
+                {
+                  "key": "episode",
+                  "value": "S01E01"
+                }
+              ]
+            },
+            "description": "Filtrer par code d'épisode (ex: S01E01)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Episode",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/episodes/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "episodes", "1"]
+            },
+            "description": "Récupérer le premier épisode (Pilot)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Multiple Episodes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{user_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/episodes/multiple?ids=1,2,3",
+              "host": ["{{base_url}}"],
+              "path": ["api", "episodes", "multiple"],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "1,2,3"
+                }
+              ]
+            },
+            "description": "Récupérer plusieurs épisodes"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints pour les épisodes Rick and Morty",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{user_token}}",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Home",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        },
+        "description": "Documentation de l'API (pas besoin d'authentification)"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "user_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: rickmorty_php
+    volumes:
+      - ./:/var/www/html
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      APP_ENV: ${APP_ENV}
+    networks:
+      - rickmorty_network
+    depends_on:
+      - mysql
+
+  nginx:
+    image: nginx:alpine
+    container_name: rickmorty_nginx
+    ports:
+      - '${NGINX_PORT}:80'
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - rickmorty_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: rickmorty_mysql
+    ports:
+      - '${MYSQL_PORT}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - rickmorty_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: rickmorty_phpmyadmin
+    ports:
+      - '${PHPMYADMIN_PORT}:80'
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - mysql
+    networks:
+      - rickmorty_network
+
+volumes:
+  mysql_data:
+
+networks:
+  rickmorty_network:
+    driver: bridge

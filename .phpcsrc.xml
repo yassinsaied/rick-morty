@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ruleset name="PSR12 Standard">
+    <description>PSR12 Code Style</description>
+
+    <!-- Include PSR12 standard -->
+    <rule ref="PSR12"/>
+
+    <!-- Set paths to check -->
+    <file>src/</file>
+    <file>tests/</file>
+
+    <!-- Exclude vendor and var directories -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/var/*</exclude-pattern>
+    <exclude-pattern>*/.phpunit.cache/*</exclude-pattern>
+</ruleset>
