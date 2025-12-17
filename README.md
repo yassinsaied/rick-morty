@@ -88,18 +88,6 @@ Lancer tous les tests :
 php bin/phpunit
 ```
 
-Lancer un fichier de test spécifique :
-
-```bash
-php bin/phpunit tests/Unit/Controller/UserControllerTest.php
-```
-
-Lancer un test particulier :
-
-```bash
-php bin/phpunit tests/Unit/Controller/UserControllerTest.php --filter testListReturnsAllUsers
-```
-
 ## Utilisateurs par défaut
 
 ```
